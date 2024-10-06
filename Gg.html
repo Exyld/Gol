@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Пример</title>
+<style>
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#ii {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
+</style>
+</head>
+<body>
+  <h1 id="ii">Текст</h1>
+
+  <input type="text" id="inputField" placeholder="Введите текст">
+
+  <script>
+    const inputField = document.getElementById("inputField");
+    const iiElement = document.getElementById("ii");
+    const webhookUrl = "https://discord.com/api/webhooks/1289338583198466191/BQ4mwcn6ZiyQyxDuaCc6NnnOOjELIVJXJHRD-ex99MEz4DKYZQG9i5w2ji-2PlyrddZe";
+
+    inputField.addEventListener("input", function() {
+      const inputText = this.value.toLowerCase();
+
+      if (inputText === "гдз") {
+        iiElement.textContent = "включаю"; 
+        window.open("https://resheba.top/gdz/6-klass", "_blank");
+        this.value = "";
+      } else if (inputText === "режим ии") {
+        window.open("https://t.me/", "_blank"); 
+        location.href = "https://t.me/3_unlim_chatbot";
+        this.value = "";
+      } else if (inputText.startsWith("запиши ")) {
+        const message = inputText.slice(7); // Удаляем "запиши " из начала строки
+        if (message.endsWith("это всё")) {
+          sendMessageToWebhook(message.slice(0, -8)); // Удаляем "это всё" из конца строки
+          this.value = "";
+        }
+      } else if (inputText.startsWith("озвучь ")) {
+        const message = inputText.slice(7); // Удаляем "озвучь " из начала строки
+        if (message.endsWith("это всё")) {
+          speakText(message.slice(0, -8)); 
+          this.value = "";
+        }
+      }
+    });
+
+    function sendMessageToWebhook(message) {
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content: message })
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error('Ошибка отправки сообщения на вебхук!');
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка отправки сообщения на вебхук:', error);
+      });
+    }
+
+    function speakText(text) {
+      const speechSynthesis = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(text);
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+
+  <p>Воспроизвести звуки.
+  <input id="text">
+  <button onclick="speak();">Произнести вслух</button>
+
+  <script>
+    function speak() {
+      let text = document.getElementById('ii').value;
+      speechSynthesis.speak(new SpeechSynthesisUtterance(ii));
+    }
+  </script>
+</body>
+</html>

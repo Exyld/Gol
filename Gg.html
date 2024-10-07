@@ -1,98 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Пример</title>
-<style>
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+  <title>Привет, Telegram!</title>
+  <meta charset="UTF-8">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      color: var(--tg-theme-text-color);
+      background: var(--tg-theme-bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 18px;
+    }
 
-#ii {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+    .hint {
+      color: var(--tg-theme-hint-color);
+    }
 
-input[type="text"] {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-}
-</style>
+    .link {
+      color: var(--tg-theme-link-color);
+    }
+
+    .button {
+      background: var(--tg-theme-button-color);
+      color: var(--tg-theme-button-text-color);
+      border: none;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .button:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    #usercard {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1 id="ii">Текст</h1>
-
-  <input type="text" id="inputField" placeholder="Введите текст">
+  <div id="usercard">
+  </div>
+  <p>Just text</p> 
+  <a class="link" href="https://mihailgok.ru">Link</a> 
+  <p class="hint">Some little hint</p> 
+  <button id="btn" class="button">Show/Hide Main Button</button> 
+  <button id="btnED" class="button">Enable/Disable Main Button</button> 
 
   <script>
-    const inputField = document.getElementById("inputField");
-    const iiElement = document.getElementById("ii");
-    const webhookUrl = "https://discord.com/api/webhooks/1289338583198466191/BQ4mwcn6ZiyQyxDuaCc6NnnOOjELIVJXJHRD-ex99MEz4DKYZQG9i5w2ji-2PlyrddZe";
+    // Получаем объект Telegram WebApp
+    let tg = window.Telegram.WebApp;
 
-    inputField.addEventListener("input", function() {
-      const inputText = this.value.toLowerCase();
+    // Расширяем на все окно
+    tg.expand(); 
 
-      if (inputText === "гдз") {
-        iiElement.textContent = "включаю"; 
-        window.open("https://resheba.top/gdz/6-klass", "_blank");
-        this.value = "";
-      } else if (inputText === "режим ии") {
-        window.open("https://t.me/", "_blank"); 
-        location.href = "https://t.me/3_unlim_chatbot";
-        this.value = "";
-      } else if (inputText.startsWith("запиши ")) {
-        const message = inputText.slice(7); // Удаляем "запиши " из начала строки
-        if (message.endsWith("это всё")) {
-          sendMessageToWebhook(message.slice(0, -8)); // Удаляем "это всё" из конца строки
-          this.value = "";
-        }
-      } else if (inputText.startsWith("озвучь ")) {
-        const message = inputText.slice(7); // Удаляем "озвучь " из начала строки
-        if (message.endsWith("это всё")) {
-          speakText(message.slice(0, -8)); 
-          this.value = "";
-        }
+    // Изменяем текст и цвет основной кнопки
+    tg.MainButton.text = "Измененный текст"; 
+    tg.MainButton.textColor = "#F55353";
+    tg.MainButton.color = "#143F6B"; 
+
+    // Обработчик нажатия на кнопку Show/Hide Main Button
+    let btn = document.getElementById("btn");
+    btn.addEventListener('click', function() {
+      if (tg.MainButton.isVisible) {
+        tg.MainButton.hide();
+      } else {
+        tg.MainButton.show();
       }
     });
 
-    function sendMessageToWebhook(message) {
-      fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ content: message })
-      })
-      .then(response => {
-        if (!response.ok) {
-          console.error('Ошибка отправки сообщения на вебхук!');
-        }
-      })
-      .catch(error => {
-        console.error('Ошибка отправки сообщения на вебхук:', error);
-      });
-    }
+    // Обработчик нажатия на кнопку Enable/Disable Main Button
+    let btnED = document.getElementById("btnED");
+    btnED.addEventListener('click', function() {
+      if (tg.MainButton.isActive) {
+        tg.MainButton.setParams({"color": "#E0FFFF"}); //меняем цвет
+        tg.MainButton.disable(); 
+      } else {
+        tg.MainButton.setParams({"color": "#143F6B"}); //меняем цвет
+        tg.MainButton.enable();
+      }
+    });
 
-    function speakText(text) {
-      const speechSynthesis = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(text);
-      speechSynthesis.speak(utterance);
-    }
-  </script>
+    // Отправка данных при нажатии на основную кнопку
+    Telegram.WebApp.onEvent('mainButtonClicked', function() {
+      tg.sendData("some string that we need to send"); 
+      // при клике на основную кнопку отправляем данные в строковом виде
+    });
 
-  <p>Воспроизвести звуки.
-  <input id="text">
-  <button onclick="speak();">Произнести вслух</button>
+    // Вывод информации о пользователе
+    let usercard = document.getElementById("usercard");
+    let profName = document.createElement('p');
+    profName.innerText = `${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name} 
+                         ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`; 
+    usercard.appendChild(profName);
 
-  <script>
-    function speak() {
-      let text = document.getElementById('ii').value;
-      speechSynthesis.speak(new SpeechSynthesisUtterance(ii));
-    }
+    let userid = document.createElement('p'); 
+    userid.innerText = tg.initDataUnsafe.user.id; 
+    usercard.appendChild(userid); 
   </script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Копирование текста</title>
+  <title>Отображение текста</title>
   <script>
-    function copyText() {
+    function showText() {
       // Находим элемент с текстом "50897пр"
       let targetElement = document.querySelector('body *:contains("50897пр")');
 
@@ -12,17 +12,9 @@
         // Находим следующий за ним элемент с тегом "ник"
         let nikElement = targetElement.nextElementSibling;
         if (nikElement && nikElement.tagName === 'NIK') {
-          // Копируем текст из элемента "ник"
-          let textToCopy = nikElement.textContent;
-          navigator.clipboard.writeText(textToCopy)
-            .then(() => {
-              // Выводим сообщение об успешном копировании
-              alert("Текст скопирован: " + textToCopy);
-            })
-            .catch(err => {
-              // Выводим сообщение об ошибке
-              console.error("Ошибка копирования: ", err);
-            });
+          // Выводим текст из элемента "ник" на страницу
+          let textToShow = nikElement.textContent;
+          alert("Текст: " + textToShow); // Или используйте console.log() для вывода в консоль
         } else {
           // Выводим сообщение, что элемент "ник" не найден
           alert("Элемент 'ник' не найден рядом с '50897пр'");
@@ -35,7 +27,7 @@
   </script>
 </head>
 <body>
-  <button onclick="copyText()">Копировать текст</button>
+  <button onclick="showText()">Показать текст</button>
   <p>Пример текста: 50897пр <nik>Текст1</nik></p> 
   <!--  ваш код для  ff.html -->
 </body>

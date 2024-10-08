@@ -10,25 +10,24 @@
 
   <script>
     function loadText() {
-      // Создаем объект XMLHttpRequest для выполнения запроса
       const xhr = new XMLHttpRequest();
-
-      // Устанавливаем обработчик события загрузки
       xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
-          // Получаем текст из ответа и выводим его на страницу
           const text = xhr.responseText;
-          document.getElementById("text").innerHTML = text;
+          const extractedText = extractText(text);
+          document.getElementById("text").innerHTML = extractedText;
         } else {
           console.error("Ошибка загрузки текста:", xhr.status);
         }
       };
-
-      // Устанавливаем URL запроса
       xhr.open("GET", "ff.html");
-
-      // Отправляем запрос
       xhr.send();
+    }
+
+    function extractText(text) {
+      const startIndex = text.indexOf("555111") + "555111".length;
+      const endIndex = text.indexOf(".", startIndex) + 1;
+      return text.substring(startIndex, endIndex);
     }
   </script>
 

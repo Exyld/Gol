@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Отображение текста</title>
-  <script>
-    function showText() {
-      // Находим элемент с текстом "50897пр"
-      let targetElement = document.querySelector('body *:contains("50897пр")');
-
-      // Если элемент найден
-      if (targetElement) {
-        // Находим следующий за ним элемент с тегом "ник"
-        let nikElement = targetElement.nextElementSibling;
-        if (nikElement && nikElement.tagName === 'NIK') {
-          // Выводим текст из элемента "ник" на страницу
-          let textToShow = nikElement.textContent;
-          alert("Текст: " + textToShow); // Или используйте console.log() для вывода в консоль
-        } else {
-          // Выводим сообщение, что элемент "ник" не найден
-          alert("Элемент 'ник' не найден рядом с '50897пр'");
-        }
-      } else {
-        // Выводим сообщение, что элемент "50897пр" не найден
-        alert("Текст '50897пр' не найден на странице");
-      }
-    }
-  </script>
+  <title>Пример</title>
 </head>
 <body>
-  <button onclick="showText()">Показать текст</button>
-  <p>Пример текста: 50897пр <nik>Текст1</nik></p> 
-  <!--  ваш код для  ff.html -->
+
+  <button onclick="loadText()">Загрузить текст</button>
+  <div id="text"></div>
+
+  <script>
+    function loadText() {
+      // Создаем объект XMLHttpRequest для выполнения запроса
+      const xhr = new XMLHttpRequest();
+
+      // Устанавливаем обработчик события загрузки
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          // Получаем текст из ответа и выводим его на страницу
+          const text = xhr.responseText;
+          document.getElementById("text").innerHTML = text;
+        } else {
+          console.error("Ошибка загрузки текста:", xhr.status);
+        }
+      };
+
+      // Устанавливаем URL запроса
+      xhr.open("GET", "ff.html");
+
+      // Отправляем запрос
+      xhr.send();
+    }
+  </script>
+
 </body>
 </html>
